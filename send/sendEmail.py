@@ -1,14 +1,23 @@
 import smtplib
+
+import sys
+sys.path.append('../common')
 import proof
+
+##new line variable
 nl = '\r\n'
 
+##verbose flag just prints information about the email being sent
+
 def sendemail(from_addr, to_addr, cc_addr,
-              subject, message,
-              login, password,
+              subject, message, powork,
+              login, password, verbose,
               smtpserver='smtp.gmail.com:587'):
     
     ##Addition of POW into header
-    header = 'X-work-proof: {0}'.format(proof.pow(20,to_addr.encode()).decode("utf-8")) + nl
+    header = ''
+    if(powork != None):
+        header += 'X-work-proof: {0}'.format(proof.pow(powork,to_addr.encode()).decode("utf-8")) + nl
     ##formation of headers
     header += 'From: {0}'.format(from_addr) + nl
     header += 'To: {0}'.format(to_addr) + nl #','.join(to_addr_list) + nl
@@ -20,8 +29,11 @@ def sendemail(from_addr, to_addr, cc_addr,
     server = smtplib.SMTP(smtpserver)
     server.starttls()
     server.login(login,password)
-    problems = server.sendmail(from_addr, to_addr_list, message)
-    #print(problems)
+    problems = server.sendmail(from_addr, to_addr, message)
+    if(verbose == True):
+        print(powork)
+        print(problems)
+        print(header)
     server.quit()
     return problems
 
@@ -29,9 +41,9 @@ def sendemail(from_addr, to_addr, cc_addr,
 
 ##test variables
 from_addr = 'tigerhacks2018Delta@gmail.com'
-to_addr = 'winters.john@gmail.com'                                         
+to_addr = 'tigerhacks2018Alpha@outlook.com'                                         
 login = 'tigerhacks2018Delta@gmail.com'
-password = ''
+password = 'WESrY45@Ul1h'
 subject = 'test'
 message = 'icles'
 
@@ -40,4 +52,4 @@ to_addr_list = ['winters.john@gmail.com']
 
 
 #run code
-sendemail(from_addr, to_addr, '', subject, message, login, password)
+#sendemail(from_addr, to_addr, '', subject, message, login, password)
