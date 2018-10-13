@@ -2,12 +2,14 @@ import imaplib
 import email.parser
 import email.utils
 
+import sys
+sys.path.append('../common')
+import proof
+
 IMAP_SERVER = 'outlook.office365.com'
 EMAIL_ACCOUNT = 'tigerhacks2018Alpha@outlook.com'
 EMAIL_FOLDER = 'inbox'
 PASSWORD = '9El%wSC73^kO'
-
-NL = b'\r\n'
 
 def list_mb(m):
     rv, data = m.search(None, 'ALL')
@@ -22,7 +24,7 @@ def list_mb(m):
         raw = data[0][1]
         hp = email.parser.BytesParser()
         pd = hp.parsebytes(raw)
-        print('======== MESSAGE ========')
+        print('\n======== MESSAGE ========')
         print('From:', pd.get('From'))
         print('Subject:', pd.get('Subject'))
         
@@ -43,7 +45,13 @@ def list_mb(m):
             continue
         recv_time = datetime.timestamp()
         print('Received:', datetime)
+        print('\t', int(recv_time))
         
+        if pow:
+            if proof.check(20, pow.encode(), recv_time):
+                print('PoW success.')
+            else:
+                print('PoW failure!')
         
             
 
