@@ -31,7 +31,7 @@ def sendemail(from_addr, to_addr, cc_addr,
 from_addr = 'tigerhacks2018Delta@gmail.com'
 to_addr = 'winters.john@gmail.com'                                         
 login = 'tigerhacks2018Delta@gmail.com'
-password = 'dxF$5DzV580q'
+password = ''
 subject = 'test'
 message = 'icles'
 
