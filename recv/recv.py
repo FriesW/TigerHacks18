@@ -3,6 +3,7 @@ import email
 import email.parser
 import email.utils
 from collections import namedtuple
+import re
 
 import sys
 sys.path.append('../common')
@@ -29,19 +30,11 @@ def _list_mb(m):
         raw = data[0][1]
         hp = email.parser.BytesParser()
         pd = hp.parsebytes(raw)
-        #print('\n======== MESSAGE ========')
-        #print('From:', pd.get('From'))
-        #print('Subject:', pd.get('Subject'))
         
         pow = pd.get('X-work-proof')
-        #if not pow:
-        #    print('Proof: NONE')
-        #else:
-        #    print('Proof:', pow)
         
         recv_header = pd.get('Received')
         if not recv_header:
-        #    print('Received: MISSING')
             continue
         datetime = email.utils.parsedate_to_datetime(
             recv_header.split(';')[-1])
@@ -49,16 +42,10 @@ def _list_mb(m):
             print('Received: Failed to parse')
             continue
         recv_time = datetime.timestamp()
-        #print('Received:', datetime)
-        #print('\t', int(recv_time))
         
         pow_status = None
         if pow:
             pow_status = proof.check(20, EMAIL_ACCOUNT, pow.encode(), recv_time)
-        #    if pow_status:
-        #        print('PoW success.')
-        #    else:
-        #        print('PoW failure!')
         body = ''
         b = email.message_from_string(raw.decode())
         p = b.get_payload()
@@ -67,9 +54,12 @@ def _list_mb(m):
                 body += payload.get_payload()
         else:
             body = p
+        rep = re.compile(r'<.*?>')
+        body = rep.sub('', body)
         out.append( _email(pd.get('From'), pd.get('Subject'), datetime, body, pow_status) )
     
-    return out.reverse()
+    out.reverse()
+    return out
 
 class Fetcher:
     def __init__(self):
