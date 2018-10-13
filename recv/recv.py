@@ -48,7 +48,7 @@ def list_mb(m):
         print('\t', int(recv_time))
         
         if pow:
-            if proof.check(20, pow.encode(), recv_time):
+            if proof.check(20, EMAIL_ACCOUNT, pow.encode(), recv_time):
                 print('PoW success.')
             else:
                 print('PoW failure!')
