@@ -1,4 +1,6 @@
 import imaplib
+import email.parser
+import email.utils
 
 IMAP_SERVER = 'outlook.office365.com'
 EMAIL_ACCOUNT = 'tigerhacks2018Alpha@outlook.com'
@@ -17,11 +19,33 @@ def list_mb(m):
         if rv != 'OK':
             print('iter error...')
             return
+        raw = data[0][1]
+        hp = email.parser.BytesParser()
+        pd = hp.parsebytes(raw)
         print('======== MESSAGE ========')
-        lines = data[0][1].split(NL)
-        for l in lines:
-            if l.startswith(b'Received:'):
-                print(l)
+        print('From:', pd.get('From'))
+        print('Subject:', pd.get('Subject'))
+        
+        pow = pd.get('X-work-proof')
+        if not pow:
+            print('Proof: NONE')
+        else:
+            print('Proof:', pow)
+        
+        recv_header = pd.get('Received')
+        if not recv_header:
+            print('Received: MISSING')
+            continue
+        datetime = email.utils.parsedate_to_datetime(
+            recv_header.split(';')[-1])
+        if not datetime:
+            print('Received: Failed to parse')
+            continue
+        recv_time = datetime.timestamp()
+        print('Received:', datetime)
+        
+        
+            
 
 
 m = imaplib.IMAP4_SSL(IMAP_SERVER)
