@@ -45,7 +45,7 @@ to_addr = 'tigerhacks2018Alpha@outlook.com'
 login = 'tigerhacks2018Delta@gmail.com'
 password = 'WESrY45@Ul1h'
 subject = 'test'
-message = 'icles'
+message = 'my stuff'
 
 ##lists?
 to_addr_list = ['winters.john@gmail.com']
