@@ -20,16 +20,22 @@ class _Tester:
             return True
         return False
 
-def check(diff, header, delta_max=60):
+def check(diff, identity, header, relative_to=time(), delta_max=60):
     if type(diff) != int:
         raise TypeError()
     if diff < 0:
         raise ValueError()
+    if type(identity) == str:
+        identity = identity.encode()
+    if type(identity) != bytes:
+        raise TypeError()
     if type(header) != bytes:
         raise TypeError()
     
     starting, creation_time, b64_nonce = header.split(b';')
-    if abs(time() - int(creation_time)) > delta_max:
+    if starting != identity:
+        return False
+    if abs(relative_to - int(creation_time)) > delta_max:
         return False
     t = _Tester(diff)
     return t._hash_test(starting, creation_time, base64.b64decode(b64_nonce))
