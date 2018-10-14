@@ -1,5 +1,6 @@
 from sanic import response
 from functools import wraps
+from collections import OrderedDict
 import hashlib
 from itsdangerous import Signer
 from os import urandom
@@ -68,7 +69,7 @@ def attach(sanic):
     @authorized()
     async def account(request):
         u = get_user(request)
-        data = []
+        data = OrderedDict()
         if u in STATE:
             data = STATE[u]
         return response.html(edit.build(data))
@@ -76,7 +77,12 @@ def attach(sanic):
     @sanic.route('/account/update', methods=['POST'])
     @authorized()
     async def update(request):
-        print(request.json)
+        u = get_user(request)
+        l = OrderedDict()
+        for r in request.json:
+            if r[1].isdigit():
+                l[r[0]] = int(r[1])
+        STATE[u] = l
         return response.text('Success.', 200)
     
     @sanic.route('/api/<sender>/<recip>')

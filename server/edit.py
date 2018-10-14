@@ -8,9 +8,11 @@ with open('web_assets/edit_row.tp','r') as f:
     
 def build(data):
     table = ''
-    for r in data + [('','','')]:
+    for r in data.items():
         table += _row \
-            .replace('{{{DIFF}}}', r[2]) \
-            .replace('{{{RECV}}}', r[1]) \
+            .replace('{{{DIFF}}}', r[1]) \
             .replace('{{{SEND}}}', r[0])
+    table += _row \
+            .replace('{{{DIFF}}}', '') \
+            .replace('{{{SEND}}}', '')
     return _template.replace('{{{TABLE}}}', table)
