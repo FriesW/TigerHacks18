@@ -1,4 +1,5 @@
 from sanic import response
+from functools import wraps
 import hashlib
 from itsdangerous import Signer
 from os import urandom
@@ -17,7 +18,7 @@ def authorized():
             # run some method that checks the request
             # for the client's authorization status
             try:
-                c = request.cookies.get('auth')
+                c = request.cookies.get('auth').encode()
                 print(c)
                 dangerous.unsign(c)
                 is_authorized = True
@@ -27,8 +28,7 @@ def authorized():
             if is_authorized:
                 # the user is authorized.
                 # run the handler method and return the response
-                response = await f(request, *args, **kwargs)
-                return response
+                return await f(request, *args, **kwargs)
             else:
                 # the user is not authorized.
                 return response.text('not authorized', 403)
@@ -40,7 +40,7 @@ def attach(sanic):
     sanic.static('/', 'web_assets/login.html')
     sanic.static('/login.css', 'web_assets/login.css')
     
-    @sanic.route('/login', methods=['POST'])
+    @sanic.route('/login', methods=['POST','GET'])
     async def login(request):
         fu = request.form.get('username')
         fp = request.form.get('password')
@@ -52,12 +52,12 @@ def attach(sanic):
         if fu in USERS:
             if USERS[fu] == hp:
                 res = response.redirect('/account', status=303)
-                res.cookies['auth'] = dangerous.sign(b'auth')
+                res.cookies['auth'] = dangerous.sign(b'auth').decode()
                 return res
         return response.redirect('/', status=303)
     
     @sanic.route('/account')
     @authorized()
     async def account(request):
-        return request.text('here we are',200)
+        return response.text('here we are',200)
         
