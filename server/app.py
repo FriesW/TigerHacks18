@@ -12,7 +12,7 @@ dangerous = Signer(urandom(32))
 SEED = b'\x06\x10\x0c?M\xa5u\x1c\x1e\x8d\x8b\xae-"\x86u' #Should be secret, but whatever
 
 USERS = dict()
-USERS['tigerhacks2018Alpha@outlook.com'] = b'\xe2\xac-#:\x1f\xdfaPz\xdb\x8e\x11(\xf4\x86.\x9f\xf3Qg\xd2%\xc5vy\x96\x942\x97\xe5s'
+USERS['tigerhacks2018Alpha@outlook.com'.lower()] = b'\xe2\xac-#:\x1f\xdfaPz\xdb\x8e\x11(\xf4\x86.\x9f\xf3Qg\xd2%\xc5vy\x96\x942\x97\xe5s'
 
 STATE = dict()
 
@@ -58,8 +58,8 @@ def attach(sanic):
         h = hashlib.sha256()
         h.update(fp.encode())
         hp = h.digest()
-        if fu in USERS:
-            if USERS[fu] == hp:
+        if fu.lower() in USERS:
+            if USERS[fu.lower()] == hp:
                 res = response.redirect('/account', status=303)
                 res.cookies['auth'] = dangerous.sign(fu.encode()).decode()
                 return res
@@ -68,16 +68,17 @@ def attach(sanic):
     @sanic.route('/account')
     @authorized()
     async def account(request):
-        u = get_user(request)
+        user = get_user(request)
+        u = user.lower()
         data = OrderedDict()
         if u in STATE:
             data = STATE[u]
-        return response.html(edit.build(data))
+        return response.html(edit.build(user, data))
     
     @sanic.route('/account/update', methods=['POST'])
     @authorized()
     async def update(request):
-        u = get_user(request)
+        u = get_user(request).lower()
         l = OrderedDict()
         for r in request.json:
             if r[1].isdigit():
@@ -87,7 +88,8 @@ def attach(sanic):
     
     @sanic.route('/api/<sender>/<recip>')
     async def api(request, sender, recip):
-        print(sender, recip)
+        sender = sender.lower()
+        recip = recip.lower()
         if recip in STATE:
             r = STATE[recip]
             if sender in r:

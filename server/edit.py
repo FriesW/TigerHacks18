@@ -6,7 +6,7 @@ _row = ''
 with open('web_assets/edit_row.tp','r') as f:
     _row = f.read()
     
-def build(data):
+def build(user, data):
     table = ''
     for r in data.items():
         table += _row \
@@ -15,4 +15,6 @@ def build(data):
     table += _row \
             .replace('{{{DIFF}}}', '') \
             .replace('{{{SEND}}}', '')
-    return _template.replace('{{{TABLE}}}', table)
+    return _template \
+        .replace('{{{TABLE}}}', table) \
+        .replace('{{{USER}}}', user)

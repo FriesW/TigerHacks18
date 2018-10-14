@@ -20,6 +20,7 @@
 <p>&nbsp;</p>
 <section class="container">
 <h1>Pure Proof <small>edit records below</small></h1>
+{{{USER}}}
   
 <div class="table table-responsive">
 <form id = "proof_form">
