@@ -6,6 +6,8 @@ from os import urandom
 
 dangerous = Signer(urandom(32))
 
+SEED = urandom(32)
+
 USERS = dict()
 USERS['tigerhacks2018Alpha@outlook.com'] = b'\xe2\xac-#:\x1f\xdfaPz\xdb\x8e\x11(\xf4\x86.\x9f\xf3Qg\xd2%\xc5vy\x96\x942\x97\xe5s'
 
@@ -60,4 +62,26 @@ def attach(sanic):
     @authorized()
     async def account(request):
         return response.text('here we are',200)
+    
+    @sanic.route('/account/update')
+    @authorized()
+    async def update(request):
+        return response.text('hmmmm....')
+    
+    @sanic.route('/api/<tag>/<tag>')
+    async def api(request, sender, recip):
+        print(sender, recip)
+        if recip in STATE:
+            r = STATE[recip]
+            if sender in r:
+                return response.text(r[sender])
+        h = hashlib.sha256()
+        h.update(SEED)
+        h.update(sender)
+        h.update(recip)
+        hd = h.digest()
+        c = hd[0] + hd[1] + hd[2]
+        c = (c%20)+10
+        return response.text(str(c))
+        
         
