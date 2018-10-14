@@ -82,7 +82,7 @@ def attach(sanic):
         l = OrderedDict()
         for r in request.json:
             if r[1].isdigit():
-                l[r[0]] = int(r[1])
+                l[r[0].lower()] = int(r[1])
         STATE[u] = l
         return response.text('Success.', 200)
     
