@@ -14,7 +14,7 @@ main = Sanic('main')
 @upgrade.route('/')
 @upgrade.route('/<path:path>')
 async def reroute(request, path=''):
-    return response.redirect(request.url.replace('http://','https://',1),         status=301)
+    return response.redirect(request.url.replace('http://','https://',1), status=301)
 
 app.attach(main)
     
@@ -32,7 +32,7 @@ if ssl_c != None:
     asyncio.ensure_future(srv_upgrade)
 asyncio.ensure_future(srv_main)
 
-signal(SIGINT, lambda s, f: loop.sop())
+signal(SIGINT, lambda s, f: loop.stop())
 try:
     loop.run_forever()
 except:
