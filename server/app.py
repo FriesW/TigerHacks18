@@ -16,7 +16,7 @@ USERS['tigerhacks2018Alpha@outlook.com'] = b'\xe2\xac-#:\x1f\xdfaPz\xdb\x8e\x11(
 STATE = dict()
 
 def get_user(req):
-    req.cookies.get('auth').encode()
+    c = req.cookies.get('auth').encode()
     d = dangerous.unsign(c)
     return d.decode()
 
@@ -67,7 +67,7 @@ def attach(sanic):
     @sanic.route('/account')
     @authorized()
     async def account(request):
-        u = get_user()
+        u = get_user(request)
         data = []
         if u in STATE:
             data = STATE[u]
