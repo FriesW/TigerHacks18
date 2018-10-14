@@ -6,7 +6,10 @@ from signal import signal, SIGINT
 
 import app
 
-ssl_c = None
+_pwd = '/etc/letsencrypt/live/pureproof.org/'
+ssl_c = {'cert': _pwd+'cert.pem',
+        'key' : _pwd+'privkey.pem'}
+
 
 upgrade = Sanic('upgrade')
 main = Sanic('main')
