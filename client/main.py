@@ -9,6 +9,7 @@ from time import sleep
 
 import recv
 import send
+from api import api
 
 class ListView(Frame):
     def __init__(self, screen):
@@ -54,8 +55,9 @@ class ListView(Frame):
         raise NextScene("Compose Email")
 
     def _view(self):
+        pass
         #self.save()
-        raise NextScene("Edit Contact")
+        #raise NextScene("Edit Contact")
 
     def _delete(self):
         pass
@@ -77,9 +79,11 @@ class ContactView(Frame):
                                           reduce_cpu=True)
         layout = Layout([100], fill_frame=True)
         self.add_layout(layout)
-        layout.add_widget(Text("To:", "recip"))
+        self._pow_txt = Text("Proof:", "pow")
+        self._pow_txt.value = ''
+        layout.add_widget(Text("To:", "recip",on_blur=self._api))
         layout.add_widget(Text("Subject:", "subject"))
-        layout.add_widget(Text("Proof:", "pow"))
+        layout.add_widget(self._pow_txt)
         layout.add_widget(TextBox(
             Widget.FILL_FRAME, "Body:", "body", as_string=True, line_wrap=True))
         layout2 = Layout([1, 1, 1, 1])
@@ -92,13 +96,23 @@ class ContactView(Frame):
         # Do standard reset to clear out form, then populate with new data.
         #super(ContactView, self).reset()
 
+    def _api(self):
+        self.save()
+        if 'recip' not in self.data:
+            return
+        res = api.get(USER,self.data['recip'])
+        if res != None:
+            self._pow_txt.value = str(res)
+        
     def _send(self):
         self.save()
-        print(self.data)
-        login = 'tigerhacks2018Delta@gmail.com'
-        password = 'WESrY45@Ul1h'
-        send.sendemail('tigerhacks2018Delta@gmail.com', self.data['recip'], '',
-            self.data['subject'], self.data['body'], int(self.data['pow']),
+        pow = self.data['pow']
+        if not pow.isdigit():
+            pow = None
+        else:
+            pow = int(pow)
+        send.sendemail(USER, self.data['recip'], '',
+            self.data['subject'], self.data['body'], pow,
             SMTP_EP, USER, PASS)
         raise NextScene("Main")
 
