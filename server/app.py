@@ -4,6 +4,8 @@ import hashlib
 from itsdangerous import Signer
 from os import urandom
 
+import edit
+
 dangerous = Signer(urandom(32))
 
 SEED = b'\x06\x10\x0c?M\xa5u\x1c\x1e\x8d\x8b\xae-"\x86u' #Should be secret, but whatever
@@ -13,6 +15,11 @@ USERS['tigerhacks2018Alpha@outlook.com'] = b'\xe2\xac-#:\x1f\xdfaPz\xdb\x8e\x11(
 
 STATE = dict()
 
+def get_user(req):
+    req.cookies.get('auth').encode()
+    d = dangerous.unsign(c)
+    return d.decode()
+
 def authorized():
     def decorator(f):
         @wraps(f)
@@ -20,9 +27,7 @@ def authorized():
             # run some method that checks the request
             # for the client's authorization status
             try:
-                c = request.cookies.get('auth').encode()
-                print(c)
-                dangerous.unsign(c)
+                get_user(request)
                 is_authorized = True
             except:
                 is_authorized = False
@@ -55,14 +60,18 @@ def attach(sanic):
         if fu in USERS:
             if USERS[fu] == hp:
                 res = response.redirect('/account', status=303)
-                res.cookies['auth'] = dangerous.sign(b'auth').decode()
+                res.cookies['auth'] = dangerous.sign(fu.encode()).decode()
                 return res
         return response.redirect('/', status=303)
     
     @sanic.route('/account')
     @authorized()
     async def account(request):
-        return await response.file('web_assets/edit.html')
+        u = get_user()
+        data = []
+        if u in STATE:
+            data = STATE[u]
+        return response.html(edit.build(data))
     
     @sanic.route('/account/update')
     @authorized()
