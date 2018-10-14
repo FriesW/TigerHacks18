@@ -9,10 +9,15 @@ import proof
 
 _email = namedtuple('Email',['sender','subject','date','body','pow'])
 
-IMAP_SERVER = 'outlook.office365.com'
-EMAIL_ACCOUNT = 'tigerhacks2018Alpha@outlook.com'
 EMAIL_FOLDER = 'inbox'
-PASSWORD = '9El%wSC73^kO'
+
+def _payload_unpack(body, payload):
+    for i in payload.get_payload():
+        if type(i) is str:
+            body += i
+        else:
+            body += _payload_unpack('', i)
+    return body
 
 def _list_mb(m):
     out = []
@@ -46,12 +51,7 @@ def _list_mb(m):
             pow_status = proof.check(20, EMAIL_ACCOUNT, pow.encode(), recv_time)
         body = ''
         b = email.message_from_string(raw.decode())
-        p = b.get_payload()
-        if type(p) != str:
-            for payload in p:
-                body += payload.get_payload()
-        else:
-            body = p
+        body = _payload_unpack('', b)
         rep = re.compile(r'<.*?>')
         body = rep.sub('', body)
         out.append( _email(pd.get('From'), pd.get('Subject'), datetime, body, pow_status) )
@@ -60,9 +60,9 @@ def _list_mb(m):
     return out
 
 class Fetcher:
-    def __init__(self):
-        self.m = imaplib.IMAP4_SSL(IMAP_SERVER)
-        self.m.login(EMAIL_ACCOUNT, PASSWORD)
+    def __init__(self, imap, user, password):
+        self.m = imaplib.IMAP4_SSL(imap)
+        self.m.login(user, password)
         self.c = False
     def fetch(self):
         if self.c:
@@ -104,8 +104,8 @@ _fs = '{:<32}  {:^7} | {:<18} | {:<26} | {:<5}'
 def get_header():
     return _fs.format('Sender', 'PoW', 'Subject', 'Date', 'Body')
 
-def build_option():
-    f = Fetcher()
+def build_option(imap, user, password):
+    f = Fetcher(imap, user, password)
     d = f.fetch()
     out = []
     i = 0

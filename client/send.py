@@ -11,8 +11,7 @@ nl = '\r\n'
 
 def sendemail(from_addr, to_addr, cc_addr,
               subject, message, powork,
-              login, password,
-              smtpserver='smtp.gmail.com:587',
+              smtpserver, login, password,
               verbose = False):
     
     ##Addition of POW into header

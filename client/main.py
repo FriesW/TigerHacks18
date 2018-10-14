@@ -5,6 +5,8 @@ from asciimatics.screen import Screen
 from asciimatics.exceptions import ResizeScreenError, NextScene, StopApplication
 import sys
 
+from time import sleep
+
 import recv
 import send
 
@@ -18,7 +20,7 @@ class ListView(Frame):
                                        title="Inbox")
         self._list_view = ListBox(
             Widget.FILL_FRAME,
-            recv.build_option(),
+            recv.build_option(IMAP_EP, USER, PASS),
             name="emails",
             on_change=self._on_pick)
         self._view_button = Button("View", self._view)
@@ -43,7 +45,7 @@ class ListView(Frame):
         self._delete_button.disabled = self._list_view.value is None
 
     def _update_cb(self):
-        self._list_view.options = recv.build_option()
+        self._list_view.options = recv.build_option(IMAP_EP, USER, PASS)
     
     def _reload_list(self, new_value=None):
         self._list_view.value = new_value
@@ -97,7 +99,7 @@ class ContactView(Frame):
         password = 'WESrY45@Ul1h'
         send.sendemail('tigerhacks2018Delta@gmail.com', self.data['recip'], '',
             self.data['subject'], self.data['body'], int(self.data['pow']),
-            login, password)
+            SMTP_EP, USER, PASS)
         raise NextScene("Main")
 
     @staticmethod
@@ -113,11 +115,26 @@ def demo(screen, scene):
 
     screen.play(scenes, stop_on_resize=True, start_scene=scene)
 
+SMTP_EP = None
+IMAP_EP = None
+USER = None
+PASS = None
 
-last_scene = None
-while True:
-    try:
-        Screen.wrapper(demo, catch_interrupt=True, arguments=[last_scene])
-        sys.exit(0)
-    except ResizeScreenError as e:
-        last_scene = e.scene
+if __name__ == '__main__':
+    conf = sys.argv[1]
+    with open(conf, 'r') as f:
+        SMTP_EP = f.readline().strip()
+        IMAP_EP = f.readline().strip()
+        USER = f.readline().strip()
+        PASS = f.readline().strip()
+    
+    print(SMTP_EP, '\t', IMAP_EP, '\t', USER)
+    sleep(5)
+        
+    last_scene = None
+    while True:
+        try:
+            Screen.wrapper(demo, catch_interrupt=True, arguments=[last_scene])
+            sys.exit(0)
+        except ResizeScreenError as e:
+            last_scene = e.scene
