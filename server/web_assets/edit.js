@@ -16,7 +16,8 @@ $(function () {
         }
         array.push(row_array);
       }
-      alert(JSON.stringify(array));
+      
+      $.post('/acount/update', JSON.stringify(array));
 
     });
   

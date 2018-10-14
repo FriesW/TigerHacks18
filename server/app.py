@@ -76,7 +76,8 @@ def attach(sanic):
     @sanic.route('/account/update')
     @authorized()
     async def update(request):
-        return response.text('hmmmm....')
+        print(request.json)
+        return response.text('Success.', 200)
     
     @sanic.route('/api/<sender>/<recip>')
     async def api(request, sender, recip):
