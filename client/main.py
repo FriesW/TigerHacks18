@@ -1,5 +1,5 @@
 from asciimatics.widgets import Frame, ListBox, Layout, Divider, Text, \
-    Button, TextBox, Widget
+    Button, TextBox, Widget, Label
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.exceptions import ResizeScreenError, NextScene, StopApplication
@@ -24,6 +24,7 @@ class ListView(Frame):
         self._delete_button = Button("Delete", self._delete)
         layout = Layout([100], fill_frame=True)
         self.add_layout(layout)
+        layout.add_widget(Label(recv.get_header()))
         layout.add_widget(self._list_view)
         layout.add_widget(Divider())
         layout2 = Layout([1, 1, 1, 1, 1])

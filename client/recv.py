@@ -99,14 +99,18 @@ def _pow_format(pow):
     if pow == False:
         return 'FAILURE'           
 
+_fs = '{:<32}  {:^7} | {:<18} | {:<26} | {:<5}'     
+
+def get_header():
+    return _fs.format('Sender', 'PoW', 'Subject', 'Date', 'Body')
+
 def build_option():
-    fs = '{:<32}  {:^7} | {:<18} | {:<26} | {:<34}' 
     f = Fetcher()
     d = f.fetch()
     out = []
     i = 0
     for e in d:
-        out.append( (fs.format(_limit(32,e.sender), _pow_format(e.pow), _limit(18,e.subject), _limit(26, str(e.date)), _limit(34,e.body) ), i ) )
+        out.append( (_fs.format(_limit(32,e.sender), _pow_format(e.pow), _limit(18,e.subject), _limit(26, str(e.date)), _limit(100,e.body) ), i ) )
         i += 1
 
     f.close()
