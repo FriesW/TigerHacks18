@@ -6,6 +6,7 @@ from asciimatics.exceptions import ResizeScreenError, NextScene, StopApplication
 import sys
 
 import recv
+import send
 
 class ListView(Frame):
     def __init__(self, screen):
@@ -92,6 +93,11 @@ class ContactView(Frame):
     def _send(self):
         self.save()
         print(self.data)
+        login = 'tigerhacks2018Delta@gmail.com'
+        password = 'WESrY45@Ul1h'
+        send.sendemail('tigerhacks2018Delta@gmail.com', self.data['recip'], '',
+            self.data['subject'], self.data['body'], int(self.data['pow']),
+            login, password)
         raise NextScene("Main")
 
     @staticmethod
