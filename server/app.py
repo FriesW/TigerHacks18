@@ -13,11 +13,11 @@ def attach(sanic):
     
     @sanic.route('/login', methods=['POST'])
     async def login(request):
-        print(request.json)
+        print(request.form)
         h = hashlib.sha256()
-        h.update(request.json['password'])
+        h.update(request.form.get('password'))
         hp = h.digest()
-        user = request.json['user']
+        user = request.form.get('user')
         if user in USERS:
             if USERS[user] == hp:
                 print('SUCCESS!')
