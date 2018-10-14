@@ -16,14 +16,14 @@ def attach(sanic):
         fu = request.form.get('username')
         fp = request.form.get('password')
         if fu == None or fp == None:
-            return respoonse.redirect('/', status=307)
+            return response.redirect('/', status=303)
         h = hashlib.sha256()
         h.update(fp.encode())
         hp = h.digest()
         if fu in USERS:
             if USERS[fu] == hp:
-                res = response.redirect('/account', status=307)
+                res = response.redirect('/account', status=303)
                 res.cookies['test'] ='yoho'
                 return res
-        return response.redirect('/', status=307)
+        return response.redirect('/', status=303)
         
