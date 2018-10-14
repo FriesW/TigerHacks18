@@ -5,8 +5,6 @@ import email.utils
 from collections import namedtuple
 import re
 
-import sys
-sys.path.append('../common')
 import proof
 
 _email = namedtuple('Email',['sender','subject','date','body','pow'])
@@ -76,6 +74,40 @@ class Fetcher:
         print('error...')
         return
     def close(self):
-        self.c = True
-        self.m.close()
-        self.m.logout()
+        try:
+            self.c = True
+            self.m.close()
+            self.m.logout()
+        except:
+            pass
+
+            
+            
+            
+def _limit(length, string):
+    string = string.replace('\n', '')
+    string = string.replace('\r', '')
+    if len(string) > length:
+        string = string[:length-3] + '...'
+    return string
+
+def _pow_format(pow):
+    if pow == None:
+        return 'plain'
+    if pow == True:
+        return 'Success'
+    if pow == False:
+        return 'FAILURE'           
+
+def build_option():
+    fs = '{:<32}  {:^7} | {:<18} | {:<26} | {:<34}' 
+    f = Fetcher()
+    d = f.fetch()
+    out = []
+    i = 0
+    for e in d:
+        out.append( (fs.format(_limit(32,e.sender), _pow_format(e.pow), _limit(18,e.subject), _limit(26, str(e.date)), _limit(34,e.body) ), i ) )
+        i += 1
+
+    f.close()
+    return out
