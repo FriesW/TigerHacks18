@@ -17,7 +17,7 @@ $(function () {
         array.push(row_array);
       }
       
-      $.post('/acount/update', JSON.stringify(array));
+      $.post('/account/update', JSON.stringify(array));
 
     });
   

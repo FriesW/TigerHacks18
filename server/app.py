@@ -73,7 +73,7 @@ def attach(sanic):
             data = STATE[u]
         return response.html(edit.build(data))
     
-    @sanic.route('/account/update')
+    @sanic.route('/account/update', methods=['POST'])
     @authorized()
     async def update(request):
         print(request.json)
