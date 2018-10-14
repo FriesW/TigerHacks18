@@ -19,7 +19,7 @@ def _payload_unpack(body, payload):
             body += _payload_unpack('', i)
     return body
 
-def _list_mb(m):
+def _list_mb(m, recip_addr):
     out = []
     rv, data = m.search(None, 'ALL')
     if rv != 'OK':
@@ -48,7 +48,7 @@ def _list_mb(m):
         
         pow_status = None
         if pow:
-            pow_status = proof.check(20, EMAIL_ACCOUNT, pow.encode(), recv_time)
+            pow_status = proof.check(20, recip_addr, pow.encode(), recv_time)
         body = ''
         b = email.message_from_string(raw.decode())
         body = _payload_unpack('', b)
@@ -61,6 +61,7 @@ def _list_mb(m):
 
 class Fetcher:
     def __init__(self, imap, user, password):
+        self.user = user
         self.m = imaplib.IMAP4_SSL(imap)
         self.m.login(user, password)
         self.c = False
@@ -69,7 +70,7 @@ class Fetcher:
             return
         rv, data = self.m.select(EMAIL_FOLDER)
         if rv == 'OK':
-            return _list_mb(self.m)
+            return _list_mb(self.m, self.user)
         self.c = True
         print('error...')
         return
