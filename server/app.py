@@ -41,6 +41,7 @@ def attach(sanic):
     
     sanic.static('/', 'web_assets/login.html')
     sanic.static('/login.css', 'web_assets/login.css')
+    sanic.static('/edit.js', 'web_assets/edit.js')
     
     @sanic.route('/login', methods=['POST','GET'])
     async def login(request):
@@ -61,7 +62,7 @@ def attach(sanic):
     @sanic.route('/account')
     @authorized()
     async def account(request):
-        return response.text('here we are',200)
+        return await response.file('web_assets/edit.html')
     
     @sanic.route('/account/update')
     @authorized()
