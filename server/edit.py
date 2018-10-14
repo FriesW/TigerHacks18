@@ -10,8 +10,8 @@ def build(user, data):
     table = ''
     for r in data.items():
         table += _row \
-            .replace('{{{DIFF}}}', r[1]) \
-            .replace('{{{SEND}}}', r[0])
+            .replace('{{{DIFF}}}', str(r[1])) \
+            .replace('{{{SEND}}}', str(r[0]))
     table += _row \
             .replace('{{{DIFF}}}', '') \
             .replace('{{{SEND}}}', '')
