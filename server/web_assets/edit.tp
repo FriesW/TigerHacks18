@@ -27,7 +27,6 @@
 <thead>
 	<tr>
     	<td>Sender</td>
-    	<td>Receiver</td>
     	<td>Difficulty</td>
     	<td>Options</td>
     </tr>
