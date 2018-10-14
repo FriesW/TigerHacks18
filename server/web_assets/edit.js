@@ -39,6 +39,6 @@ $(function () {
     });
 });
 function GetDynamicTextBox(value) {
-    return '<td><input name = "sender" type="text" value = "' + value + '" class="form-control" /></td>' + '<td><input name = "receiver" type="text" value = "' + value + '" class="form-control" /></td>' + '<td><input name = "difficulty" type="text" value = "' + value + '" class="form-control" /></td>' +
+    return '<td><input name = "sender" type="text" value = "' + value + '" class="form-control" /></td>' + '<td><input name = "difficulty" type="text" value = "' + value + '" class="form-control" /></td>' +
 '<td><button type="button" class="btn btn-danger remove"><i class="glyphicon glyphicon-remove-sign"></i></button>';
 }
