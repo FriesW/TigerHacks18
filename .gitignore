@@ -40,7 +40,8 @@ dist/
 flycheck_*.el
 
 # server auth directory
-/server/
+#/server/
+/cred/
 
 # projectiles files
 .projectile
