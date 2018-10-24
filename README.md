@@ -2,6 +2,8 @@
 
 Purer email though cryptographic proof of work. Creative application allows for an adaptable and scale-able solution.
 
+Made at TigerHacks 2018. See it on [DevPost](https://devpost.com/software/pureproof).
+
 ## Inspiration
 
 Spam emails drives everyone nuts. On top of this, all of our filtering systems are based on heuristics: they more-or-less guess. However, what if we introduced a small but non-zero cost to send an email? Everyday people wouldn't notice much impact, but it would on the scale of millions of spam emails.
